@@ -2,7 +2,7 @@
 
 A production-ready agentic system that solves decision fatigue in food ordering through intelligent, intent-driven recommendations.
 
-## 🎯 Problem Statement
+##  Problem Statement
 
 Current food delivery platforms optimize for **exploration**, not **decision-making**:
 - Users scroll endlessly through options
@@ -17,7 +17,7 @@ Current food delivery platforms optimize for **exploration**, not **decision-mak
 
 ---
 
-## ✨ Core Features
+##  Core Features
 
 ### 1. **Decision Engine**
 - Multi-objective scoring across 5 dimensions:
@@ -68,7 +68,7 @@ Dynamic mode switching:
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ### **Backend: FastAPI + Python**
 
@@ -117,7 +117,7 @@ Models:
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Python 3.9+
@@ -178,7 +178,7 @@ Frontend runs on `http://localhost:3000`
 
 ---
 
-## 📊 API Endpoints
+##  API Endpoints
 
 ### Authentication
 - `POST /auth/login` — Initiate OAuth flow
@@ -206,7 +206,7 @@ Frontend runs on `http://localhost:3000`
 
 ---
 
-## 🧠 Core Algorithms
+##  Core Algorithms
 
 ### Multi-Objective Ranking
 
@@ -236,7 +236,7 @@ Range: 0-10
 
 ---
 
-## 📦 Mock Data
+##  Mock Data
 
 Backend includes mock menu with 15+ restaurant items across cuisines:
 - Indian (Biryani, Paneer, Dal Makhani, etc.)
@@ -254,7 +254,7 @@ Each item includes:
 
 ---
 
-## 🔧 Configuration
+##  Configuration
 
 ### Environment Variables
 
@@ -274,21 +274,21 @@ DEBUG=False
 
 ---
 
-## 🎨 Persona System
+##  Persona System
 
 Users can dynamically switch personas:
 
 | Persona | Focus | Use Case |
 |---------|-------|----------|
-| 🎯 **Balanced** | Equal across all factors | Default, everyday ordering |
-| 💪 **Health-First** | Nutrition, protein | Fitness-focused users |
-| 💰 **Budget** | Price optimization | Cost-conscious users |
-| ⚡ **Fast Delivery** | Delivery speed | Time-constrained users |
-| 🔍 **Explore** | Novelty, new items | Adventure-seeking users |
+|  **Balanced** | Equal across all factors | Default, everyday ordering |
+|  **Health-First** | Nutrition, protein | Fitness-focused users |
+|  **Budget** | Price optimization | Cost-conscious users |
+|  **Fast Delivery** | Delivery speed | Time-constrained users |
+|  **Explore** | Novelty, new items | Adventure-seeking users |
 
 ---
 
-## 🚧 Future Improvements
+##  Future Improvements
 
 ### Phase 2: Advanced Features
 - [ ] Real Swiggy MCP API integration
@@ -318,7 +318,7 @@ Users can dynamically switch personas:
 
 ---
 
-## 🛠️ Development
+##  Development
 
 ### Adding New Personas
 
@@ -363,7 +363,7 @@ self.add_edge("ingredient1", "ingredient2", strength=0.8)
 
 ---
 
-## 📝 Testing
+##  Testing
 
 Quick manual testing:
 
@@ -385,7 +385,7 @@ curl -X POST http://localhost:8000/cart/summary \
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -395,20 +395,20 @@ curl -X POST http://localhost:8000/cart/summary \
 
 ---
 
-## 📄 License
+##  License
 
 MIT License - see LICENSE file for details
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 CraveLess Team  
-Built with ❤️ to eliminate food ordering decision fatigue
+Built with  to eliminate food ordering decision fatigue
 
 ---
 
-## 📞 Support
+##  Support
 
 - Documentation: `/docs` (Swagger UI)
 - Issues: GitHub Issues
@@ -416,7 +416,7 @@ Built with ❤️ to eliminate food ordering decision fatigue
 
 ---
 
-## 🎯 Vision
+##  Vision
 
 CraveLess is not just a food delivery app. It's a **decision intelligence system** that understands:
 - **What users want** (intent parsing)

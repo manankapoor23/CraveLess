@@ -61,7 +61,7 @@ export default function Dashboard() {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1>🍽️ CraveLess</h1>
+        <h1> CraveLess</h1>
         <p>AI Food Decision Engine</p>
       </header>
 
@@ -77,11 +77,11 @@ export default function Dashboard() {
               }}
               onClick={() => setPersona(p)}
             >
-              {p === 'balanced' && '⚖️'}
-              {p === 'health-first' && '💪'}
-              {p === 'budget' && '💰'}
-              {p === 'fast_delivery' && '⚡'}
-              {p === 'explore' && '🔍'}
+              {p === 'balanced' && ''}
+              {p === 'health-first' && ''}
+              {p === 'budget' && ''}
+              {p === 'fast_delivery' && ''}
+              {p === 'explore' && ''}
               {' ' + p.replace('_', ' ')}
             </button>
           ))}
@@ -90,7 +90,7 @@ export default function Dashboard() {
 
       <div style={styles.content}>
         <div style={styles.recommendations}>
-          <h2>🎯 Top 3 Recommendations</h2>
+          <h2> Top 3 Recommendations</h2>
           {loading && <p>Loading...</p>}
           {error && <p style={styles.error}>Error: {error}</p>}
           {!loading && recommendations.length === 0 && <p>No recommendations yet</p>}
@@ -105,14 +105,14 @@ export default function Dashboard() {
                 style={styles.add_to_cart_button}
                 onClick={() => addToCart(rec.item)}
               >
-                ➕ Add to Cart
+                 Add to Cart
               </button>
             </div>
           ))}
         </div>
 
         <div style={styles.sidebar}>
-          <h2>🛒 Cart ({cart.length})</h2>
+          <h2> Cart ({cart.length})</h2>
           {cart.length === 0 ? (
             <p style={styles.empty_cart}>Your cart is empty</p>
           ) : (

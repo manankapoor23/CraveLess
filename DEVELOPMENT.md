@@ -4,41 +4,41 @@
 
 ```
 craveless/
-├── backend/
-│   ├── main.py                 # FastAPI app entry point
-│   ├── requirements.txt         # Python dependencies
-│   ├── routes/
-│   │   ├── auth.py            # OAuth endpoints
-│   │   ├── recommendations.py  # Core recommendation endpoint
-│   │   └── cart.py            # Cart & order endpoints
-│   ├── services/
-│   │   ├── ranking_engine.py   # Multi-objective scoring
-│   │   ├── taste_graph.py      # Graph-based preferences
-│   │   ├── memory_engine.py    # User preference tracking
-│   │   └── nutrition_engine.py # Health & nutrition
-│   ├── models/
-│   │   ├── user.py            # User model with OAuth
-│   │   └── preference.py       # Preference & order models
-│   ├── db/
-│   │   └── database.py        # SQLAlchemy config
-│   └── data/
-│       └── mock_menu.py       # Mock restaurant data
-│
-├── frontend/
-│   ├── pages/
-│   │   ├── index.js           # Landing page
-│   │   ├── dashboard.js       # Main interface
-│   │   └── _app.js            # App wrapper
-│   ├── components/
-│   │   ├── RecommendationCard.js
-│   │   └── CartSummary.js
-│   ├── styles/
-│   │   └── globals.css
-│   ├── package.json
-│   └── next.config.js
-│
-├── .env.example
-└── README.md
+ backend/
+    main.py                 # FastAPI app entry point
+    requirements.txt         # Python dependencies
+    routes/
+       auth.py            # OAuth endpoints
+       recommendations.py  # Core recommendation endpoint
+       cart.py            # Cart & order endpoints
+    services/
+       ranking_engine.py   # Multi-objective scoring
+       taste_graph.py      # Graph-based preferences
+       memory_engine.py    # User preference tracking
+       nutrition_engine.py # Health & nutrition
+    models/
+       user.py            # User model with OAuth
+       preference.py       # Preference & order models
+    db/
+       database.py        # SQLAlchemy config
+    data/
+        mock_menu.py       # Mock restaurant data
+
+ frontend/
+    pages/
+       index.js           # Landing page
+       dashboard.js       # Main interface
+       _app.js            # App wrapper
+    components/
+       RecommendationCard.js
+       CartSummary.js
+    styles/
+       globals.css
+    package.json
+    next.config.js
+
+ .env.example
+ README.md
 ```
 
 ## Quick Start Commands

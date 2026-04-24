@@ -22,7 +22,7 @@ export default function Home() {
     <div style={styles.container}>
       <header style={styles.header}>
         <div style={styles.hero}>
-          <h1 style={styles.title}>🍽️ CraveLess</h1>
+          <h1 style={styles.title}> CraveLess</h1>
           <p style={styles.subtitle}>AI Food Decision Engine</p>
           <p style={styles.tagline}>
             Stop scrolling. Start deciding.
@@ -35,17 +35,17 @@ export default function Home() {
           <h2>The Problem</h2>
           <div style={styles.problem_grid}>
             <div style={styles.problem_item}>
-              <span style={styles.problem_icon}>📜</span>
+              <span style={styles.problem_icon}></span>
               <h3>Endless Scrolling</h3>
               <p>Users waste time browsing endless options</p>
             </div>
             <div style={styles.problem_item}>
-              <span style={styles.problem_icon}>😕</span>
+              <span style={styles.problem_icon}></span>
               <h3>Decision Fatigue</h3>
               <p>Too many choices lead to indecision</p>
             </div>
             <div style={styles.problem_item}>
-              <span style={styles.problem_icon}>⏱️</span>
+              <span style={styles.problem_icon}>⏱</span>
               <h3>Time Waste</h3>
               <p>Ordering should be fast and effortless</p>
             </div>
@@ -63,27 +63,27 @@ export default function Home() {
 
           <div style={styles.features}>
             <div style={styles.feature}>
-              <h3>🎯 Intent-Driven</h3>
+              <h3> Intent-Driven</h3>
               <p>Tell us what you want: "cheap", "high protein", "fast" - we understand.</p>
             </div>
             <div style={styles.feature}>
-              <h3>🧠 Smart Memory</h3>
+              <h3> Smart Memory</h3>
               <p>We remember what you loved, what you hated, and learn over time.</p>
             </div>
             <div style={styles.feature}>
-              <h3>📊 Multi-Objective Ranking</h3>
+              <h3> Multi-Objective Ranking</h3>
               <p>Optimizes for preference, price, health, delivery time, and novelty.</p>
             </div>
             <div style={styles.feature}>
-              <h3>🌐 Taste Graph</h3>
+              <h3> Taste Graph</h3>
               <p>Models relationships between ingredients and cuisines intelligently.</p>
             </div>
             <div style={styles.feature}>
-              <h3>❤️ Nutrition Tracking</h3>
+              <h3> Nutrition Tracking</h3>
               <p>Track calories, protein, macros. Get personalized health insights.</p>
             </div>
             <div style={styles.feature}>
-              <h3>⚡ Personas</h3>
+              <h3> Personas</h3>
               <p>Switch between health-first, budget, fast-delivery, explore modes.</p>
             </div>
           </div>
@@ -99,14 +99,14 @@ export default function Home() {
               onClick={() => handleLogin('google')}
               disabled={loggingIn}
             >
-              🔐 Login with Google
+               Login with Google
             </button>
             <button
               style={{ ...styles.login_button, background: '#FF5733' }}
               onClick={() => handleLogin('swiggy')}
               disabled={loggingIn}
             >
-              🍔 Login with Swiggy
+               Login with Swiggy
             </button>
           </div>
           <p style={styles.cta_text}>

@@ -16,7 +16,7 @@ export default function RecommendationCard({ recommendation, onRate, onNeverAgai
 
       {recommendation.memory_signal?.seen && (
         <div style={styles.memory_signal}>
-          💭 You {recommendation.memory_signal.signal === 'liked' ? '❤️ loved' : '👎 disliked'} this before
+           You {recommendation.memory_signal.signal === 'liked' ? ' loved' : ' disliked'} this before
         </div>
       )}
 
@@ -28,21 +28,21 @@ export default function RecommendationCard({ recommendation, onRate, onNeverAgai
       {recommendation.nutrition && (
         <div style={styles.nutrition}>
           <div style={styles.nutrition_item}>
-            🔥 {recommendation.nutrition.calories} cal
+             {recommendation.nutrition.calories} cal
           </div>
           <div style={styles.nutrition_item}>
-            💪 {recommendation.nutrition.protein}g protein
+             {recommendation.nutrition.protein}g protein
           </div>
           <div style={styles.nutrition_item}>
-            ⭐ Health: {Math.round(recommendation.item.health_score * 10) / 10}/10
+             Health: {Math.round(recommendation.item.health_score * 10) / 10}/10
           </div>
         </div>
       )}
 
       <div style={styles.meta}>
-        <span>💵 ₹{recommendation.item.price}</span>
-        <span>⏱️ {recommendation.item.delivery_time_mins} mins</span>
-        <span>⭐ {recommendation.item.rating}</span>
+        <span> ₹{recommendation.item.price}</span>
+        <span>⏱ {recommendation.item.delivery_time_mins} mins</span>
+        <span> {recommendation.item.rating}</span>
       </div>
 
       <div style={styles.actions}>
@@ -50,13 +50,13 @@ export default function RecommendationCard({ recommendation, onRate, onNeverAgai
           style={{ ...styles.button, ...styles.buttonRate }}
           onClick={() => onRate(recommendation.item.id)}
         >
-          👍 I like this
+           I like this
         </button>
         <button
           style={{ ...styles.button, ...styles.buttonNever }}
           onClick={() => onNeverAgain(recommendation.item.id)}
         >
-          👎 Never again
+           Never again
         </button>
       </div>
     </div>

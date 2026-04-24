@@ -6,11 +6,11 @@
 User Browser (Frontend)
     ↓ HTTP/REST
 FastAPI Backend
-    ├── Auth Service (OAuth)
-    ├── Ranking Engine (Multi-objective)
-    ├── Taste Graph (Preference propagation)
-    ├── Memory Engine (User preferences)
-    └── Nutrition Engine (Health scoring)
+     Auth Service (OAuth)
+     Ranking Engine (Multi-objective)
+     Taste Graph (Preference propagation)
+     Memory Engine (User preferences)
+     Nutrition Engine (Health scoring)
     ↓
 Database (PostgreSQL/SQLite)
 ```
@@ -27,21 +27,21 @@ Load User Preferences (MemoryEngine)
 Filter Menu Items
     ↓
 Score Items (RankingEngine)
-    ├── Preference Match (MemoryEngine)
-    ├── Health Score (NutritionEngine)
-    ├── Price Score
-    ├── Delivery Score
-    └── Novelty Score
+     Preference Match (MemoryEngine)
+     Health Score (NutritionEngine)
+     Price Score
+     Delivery Score
+     Novelty Score
     ↓
 Apply Persona Weights
     ↓
 Sort & Select Top 3
     ↓
 Explain Results
-    ├── Memory signals ("you loved this before")
-    ├── Nutritional benefits
-    ├── Why recommended
-    └── Similar alternatives
+     Memory signals ("you loved this before")
+     Nutritional benefits
+     Why recommended
+     Similar alternatives
     ↓
 Return to Frontend
 ```

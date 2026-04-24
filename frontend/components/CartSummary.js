@@ -7,14 +7,14 @@ export default function CartSummary({ cart, nutrition, health_score, gaps }) {
   return (
     <div style={styles.summary}>
       <div style={styles.header}>
-        <h2>🛒 Cart Summary</h2>
+        <h2> Cart Summary</h2>
         <span style={styles.total}>₹{cart.total_price}</span>
       </div>
 
       {nutrition && (
         <>
           <div style={styles.section}>
-            <h3>📊 Nutrition</h3>
+            <h3> Nutrition</h3>
             <div style={styles.nutrition_grid}>
               <div style={styles.nutrition_item}>
                 <span style={styles.label}>Calories</span>
@@ -36,7 +36,7 @@ export default function CartSummary({ cart, nutrition, health_score, gaps }) {
           </div>
 
           <div style={styles.section}>
-            <h3>❤️ Health Score: {health_score}/10</h3>
+            <h3> Health Score: {health_score}/10</h3>
             <div style={styles.health_bar}>
               <div
                 style={{
@@ -50,7 +50,7 @@ export default function CartSummary({ cart, nutrition, health_score, gaps }) {
 
           {gaps.length > 0 && (
             <div style={styles.section}>
-              <h3>⚠️ Nutrition Gaps</h3>
+              <h3> Nutrition Gaps</h3>
               <ul style={styles.gaps_list}>
                 {gaps.map((gap, idx) => (
                   <li key={idx} style={styles.gap_item}>
@@ -65,7 +65,7 @@ export default function CartSummary({ cart, nutrition, health_score, gaps }) {
 
       <div style={styles.action}>
         <button style={styles.checkout_button}>
-          ✓ Proceed to Checkout
+           Proceed to Checkout
         </button>
       </div>
     </div>

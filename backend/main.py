@@ -34,11 +34,11 @@ app.add_middleware(
 async def startup():
     """Initialize database and print startup info."""
     init_db()
-    print("✅ CraveLess backend started")
-    print("📝 API Docs: http://localhost:8000/docs")
-    print("🔐 OAuth: /auth/login")
-    print("🎯 Recommendations: /recommendations/get-top-3")
-    print("🛒 Cart: /cart/summary")
+    print(" CraveLess backend started")
+    print(" API Docs: http://localhost:8000/docs")
+    print(" OAuth: /auth/login")
+    print(" Recommendations: /recommendations/get-top-3")
+    print(" Cart: /cart/summary")
 
 
 # Include routes

@@ -1,6 +1,6 @@
 # CraveLess — Quick Start Guide
 
-## 🚀 Get Running in 5 Minutes
+##  Get Running in 5 Minutes
 
 ### Option 1: Automated Script (Easiest)
 
@@ -10,12 +10,12 @@ bash start.sh
 ```
 
 This will:
-1. ✅ Check Python & Node.js
-2. ✅ Create Python virtual environment
-3. ✅ Install dependencies
-4. ✅ Initialize database
-5. ✅ Start backend (port 8000)
-6. ✅ Start frontend (port 3000)
+1.  Check Python & Node.js
+2.  Create Python virtual environment
+3.  Install dependencies
+4.  Initialize database
+5.  Start backend (port 8000)
+6.  Start frontend (port 3000)
 
 Then open: **http://localhost:3000**
 
@@ -71,7 +71,7 @@ Services:
 
 ---
 
-## 🎯 Try It Out
+##  Try It Out
 
 1. **Open Frontend**: http://localhost:3000
 2. **Click "Try Demo"** (or login with OAuth)
@@ -82,7 +82,7 @@ Services:
 
 ---
 
-## 📊 API Examples
+##  API Examples
 
 ### Get Top-3 Recommendations
 
@@ -118,7 +118,7 @@ Open: **http://localhost:8000/docs**
 
 ---
 
-## 🛠️ Troubleshooting
+##  Troubleshooting
 
 ### Port Already in Use
 ```bash
@@ -143,22 +143,22 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 CraveLess/
-├── backend/           # FastAPI server
-├── frontend/          # Next.js app
-├── README.md         # Full documentation
-├── ARCHITECTURE.md   # System design
-├── API.md           # API reference
-├── start.sh         # Quick start script
-└── docker-compose.yml
+ backend/           # FastAPI server
+ frontend/          # Next.js app
+ README.md         # Full documentation
+ ARCHITECTURE.md   # System design
+ API.md           # API reference
+ start.sh         # Quick start script
+ docker-compose.yml
 ```
 
 ---
 
-## 🚀 Next Steps
+##  Next Steps
 
 1. **Explore Mock Data**: Check [backend/data/mock_menu.py](backend/data/mock_menu.py)
 2. **Test Personas**: Try all 5 decision personas
@@ -168,23 +168,23 @@ CraveLess/
 
 ---
 
-## 🎓 Key Concepts
+##  Key Concepts
 
 ### Decision Engine
 Scores items across 5 dimensions:
-- 🧠 Preference match (user history)
-- 💪 Health score (nutrition)
-- 💰 Price
-- ⚡ Delivery time
-- 🆕 Novelty
+-  Preference match (user history)
+-  Health score (nutrition)
+-  Price
+-  Delivery time
+-  Novelty
 
 ### Personas
 5 dynamic modes that adjust weights:
-- ⚖️ **Balanced** (default)
-- 💪 **Health-First** (40% health score)
-- 💰 **Budget** (45% price)
-- ⚡ **Fast Delivery** (40% delivery time)
-- 🔍 **Explore** (30% novelty)
+-  **Balanced** (default)
+-  **Health-First** (40% health score)
+-  **Budget** (45% price)
+-  **Fast Delivery** (40% delivery time)
+-  **Explore** (30% novelty)
 
 ### Taste Graph
 Graph-based preference modeling:
@@ -194,7 +194,7 @@ Graph-based preference modeling:
 
 ---
 
-## 📞 Support
+##  Support
 
 - **API Docs**: http://localhost:8000/docs
 - **Swagger UI**: Interactive API testing
@@ -203,7 +203,7 @@ Graph-based preference modeling:
 
 ---
 
-## 💡 Tips
+##  Tips
 
 - Use Chrome DevTools to inspect API calls
 - API returns explanations for each recommendation
@@ -213,4 +213,4 @@ Graph-based preference modeling:
 
 ---
 
-**Enjoy CraveLess! 🍽️**
+**Enjoy CraveLess! **
