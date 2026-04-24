@@ -1,51 +1,54 @@
 export default function RecommendationCard({ recommendation, onRate, onNeverAgain, onAddToCart }) {
   const item = recommendation?.item || {};
   const score = Number(recommendation?.score || 0).toFixed(2);
+  
+  // Create a predictable gradient based on item id
+  const hue = (item.id.length * 37) % 360;
+  const gradient = `linear-gradient(135deg, hsl(${hue}, 80%, 90%), hsl(${hue + 30}, 80%, 75%))`;
 
   return (
-    <article className="recommendation-card">
-      <div className="recommendation-head">
-        <div className="rank-pill">Rank {recommendation.rank}</div>
-        <div className="score-pill">Score {score}</div>
-      </div>
-
-      <h3>{item.name}</h3>
-      <p className="recommendation-description">{item.description}</p>
-
-      <div className="recommendation-why">
-        <span>Why this item</span>
-        <p>{recommendation.explanation || 'Strong overall match for your intent.'}</p>
-      </div>
-
-      <div className="recommendation-meta-grid">
-        <div>
-          <label>Price</label>
-          <strong>Rs {item.price}</strong>
+    <article className="food-card">
+      <div className="food-card-image" style={{ background: gradient }}>
+        <div className="food-badge">
+          ✨ {Math.round((score / 10) * 100)}% Match
         </div>
-        <div>
-          <label>Delivery</label>
-          <strong>{item.delivery_time_mins || '-'} min</strong>
-        </div>
-        <div>
-          <label>Rating</label>
-          <strong>{item.rating || '-'}</strong>
-        </div>
-        <div>
-          <label>Health</label>
-          <strong>{item.health_score || '-'} / 10</strong>
+        <div className="food-time-badge">
+          {item.delivery_time_mins || '20'} min
         </div>
       </div>
+      
+      <div className="food-card-content">
+        <div className="food-card-header">
+          <h3 className="food-title">{item.name}</h3>
+          <span className="food-price">₹{item.price}</span>
+        </div>
+        
+        <p className="food-desc">{item.description}</p>
+        
+        <div className="food-stats">
+          <span className="stat"><span className="stat-icon">⭐</span> {item.rating || '4.5'}</span>
+          <span className="stat"><span className="stat-icon">🔥</span> {item.health_score || '-'} / 10 Health</span>
+          {item.nutrition && <span className="stat"><span className="stat-icon">💪</span> {item.nutrition.protein}g Protein</span>}
+        </div>
 
-      <div className="recommendation-actions">
-        <button className="button button-ghost" onClick={() => onRate(item.id)}>
-          Save Preference
-        </button>
-        <button className="button button-ghost" onClick={() => onNeverAgain(item.id)}>
-          Exclude
-        </button>
-        <button className="button button-primary" onClick={() => onAddToCart(item)}>
-          Add to Cart
-        </button>
+        {recommendation.explanation && (
+          <div className="food-insight">
+            <span className="insight-icon">💡</span>
+            <p>{recommendation.explanation}</p>
+          </div>
+        )}
+
+        <div className="food-actions">
+          <button className="btn-secondary" onClick={() => onRate(item.id)}>
+             Heart
+          </button>
+          <button className="btn-secondary" onClick={() => onNeverAgain(item.id)}>
+             Hide
+          </button>
+          <button className="btn-primary" onClick={() => onAddToCart(item)}>
+            Add
+          </button>
+        </div>
       </div>
     </article>
   );
