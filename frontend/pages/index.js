@@ -1,275 +1,142 @@
-import { useState } from 'react';
 import Link from 'next/link';
 
-/**
- * Index - Landing page with login and feature overview.
- */
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [loggingIn, setLoggingIn] = useState(false);
-
-  const handleLogin = async (provider) => {
-    setLoggingIn(true);
-    try {
-      // In production: Call /auth/login endpoint
-      window.location.href = '/dashboard';
-    } catch (err) {
-      console.error('Login error:', err);
-    }
-  };
-
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <div style={styles.hero}>
-          <h1 style={styles.title}> CraveLess</h1>
-          <p style={styles.subtitle}>AI Food Decision Engine</p>
-          <p style={styles.tagline}>
-            Stop scrolling. Start deciding.
-          </p>
+    <main className="landing-shell">
+      <div className="landing-backdrop" />
+
+      <header className="top-nav">
+        <div className="brand-lockup">
+          <span className="brand-dot" />
+          <span className="brand-wordmark">CraveLess</span>
         </div>
+        <Link href="/dashboard" className="button button-ghost">
+          Open Demo
+        </Link>
       </header>
 
-      <section style={styles.problem}>
-        <div style={styles.content_width}>
-          <h2>The Problem</h2>
-          <div style={styles.problem_grid}>
-            <div style={styles.problem_item}>
-              <span style={styles.problem_icon}></span>
-              <h3>Endless Scrolling</h3>
-              <p>Users waste time browsing endless options</p>
-            </div>
-            <div style={styles.problem_item}>
-              <span style={styles.problem_icon}></span>
-              <h3>Decision Fatigue</h3>
-              <p>Too many choices lead to indecision</p>
-            </div>
-            <div style={styles.problem_item}>
-              <span style={styles.problem_icon}>⏱</span>
-              <h3>Time Waste</h3>
-              <p>Ordering should be fast and effortless</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style={styles.solution}>
-        <div style={styles.content_width}>
-          <h2>The Solution</h2>
-          <p style={styles.solution_text}>
-            CraveLess is an AI agent that understands your intent,
-            remembers your preferences, and recommends your top 3 options instantly.
+      <section className="hero-grid">
+        <div className="hero-copy">
+          <p className="kicker">AI Decision Agent for Food Ordering</p>
+          <h1>Stop browsing. Start deciding in one prompt.</h1>
+          <p>
+            CraveLess converts messy cravings into a clear top-3 shortlist with
+            reasoning, nutrition context, and persona-aware trade-offs.
           </p>
 
-          <div style={styles.features}>
-            <div style={styles.feature}>
-              <h3> Intent-Driven</h3>
-              <p>Tell us what you want: "cheap", "high protein", "fast" - we understand.</p>
-            </div>
-            <div style={styles.feature}>
-              <h3> Smart Memory</h3>
-              <p>We remember what you loved, what you hated, and learn over time.</p>
-            </div>
-            <div style={styles.feature}>
-              <h3> Multi-Objective Ranking</h3>
-              <p>Optimizes for preference, price, health, delivery time, and novelty.</p>
-            </div>
-            <div style={styles.feature}>
-              <h3> Taste Graph</h3>
-              <p>Models relationships between ingredients and cuisines intelligently.</p>
-            </div>
-            <div style={styles.feature}>
-              <h3> Nutrition Tracking</h3>
-              <p>Track calories, protein, macros. Get personalized health insights.</p>
-            </div>
-            <div style={styles.feature}>
-              <h3> Personas</h3>
-              <p>Switch between health-first, budget, fast-delivery, explore modes.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style={styles.cta}>
-        <div style={styles.content_width}>
-          <h2>Get Started</h2>
-          <div style={styles.login_options}>
-            <button
-              style={{ ...styles.login_button, background: '#4285F4' }}
-              onClick={() => handleLogin('google')}
-              disabled={loggingIn}
-            >
-               Login with Google
-            </button>
-            <button
-              style={{ ...styles.login_button, background: '#FF5733' }}
-              onClick={() => handleLogin('swiggy')}
-              disabled={loggingIn}
-            >
-               Login with Swiggy
-            </button>
-          </div>
-          <p style={styles.cta_text}>
-            or{' '}
-            <Link href="/dashboard" style={styles.demo_link}>
-              try demo
+          <div className="hero-actions">
+            <Link href="/dashboard" className="button button-primary">
+              Launch Agent Console
             </Link>
-          </p>
+            <a href="http://localhost:8000/docs" className="button button-ghost">
+              API Docs
+            </a>
+          </div>
         </div>
-      </section>
 
-      <section style={styles.tech_stack}>
-        <div style={styles.content_width}>
-          <h2>Built With</h2>
-          <div style={styles.tech_grid}>
-            <div style={styles.tech_item}>
-              <h4>Backend</h4>
-              <p>FastAPI + Python</p>
+        <div className="hero-card">
+          <h3>Example Prompt</h3>
+          <p className="prompt-preview">
+            I need dinner under 350 rupees, high protein, and delivered fast.
+          </p>
+
+          <div className="hero-metrics">
+            <div>
+              <span className="metric-label">Output</span>
+              <strong>Top 3 ranked items</strong>
             </div>
-            <div style={styles.tech_item}>
-              <h4>Frontend</h4>
-              <p>Next.js + React</p>
+            <div>
+              <span className="metric-label">Latency</span>
+              <strong>1 API call</strong>
             </div>
-            <div style={styles.tech_item}>
-              <h4>Database</h4>
-              <p>PostgreSQL</p>
-            </div>
-            <div style={styles.tech_item}>
-              <h4>AI</h4>
-              <p>Graph-based + Multi-objective optimization</p>
+            <div>
+              <span className="metric-label">Strategy</span>
+              <strong>Multi-objective ranking</strong>
             </div>
           </div>
         </div>
       </section>
 
-      <footer style={styles.footer}>
-        <p>CraveLess © 2025. Making food ordering decisions effortless.</p>
+      <section className="feature-section">
+        <div className="section-head">
+          <p className="kicker">Built for Real Decisions</p>
+          <h2>From intent to action in a single loop</h2>
+        </div>
+
+        <div className="feature-grid">
+          <article className="feature-card">
+            <h3>Intent Parsing</h3>
+            <p>
+              Understands phrases like healthy and quick, low budget, or try
+              something new.
+            </p>
+          </article>
+          <article className="feature-card">
+            <h3>Persona Switching</h3>
+            <p>
+              Moves between Balanced, Health-First, Budget, Fast-Delivery, and
+              Explore automatically.
+            </p>
+          </article>
+          <article className="feature-card">
+            <h3>Taste Memory</h3>
+            <p>
+              Preserves user preference signals and reuses them for future
+              recommendations.
+            </p>
+          </article>
+          <article className="feature-card">
+            <h3>Nutrition-Aware Cart</h3>
+            <p>
+              Live cart summary reports calories, macros, and health gaps before
+              checkout.
+            </p>
+          </article>
+          <article className="feature-card">
+            <h3>Agentic Flow</h3>
+            <p>
+              Conversation endpoint orchestrates recommendation tools behind a
+              single UX.
+            </p>
+          </article>
+          <article className="feature-card">
+            <h3>Future-Ready Tooling</h3>
+            <p>
+              Mock data now, direct Swiggy MCP tool integration when you move to
+              production APIs.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section className="stack-section">
+        <div className="section-head">
+          <p className="kicker">Modern Stack</p>
+          <h2>Engineered for speed, clarity, and extension</h2>
+        </div>
+        <div className="stack-grid">
+          <div>
+            <span>Frontend</span>
+            <strong>Next.js 14 + React 18</strong>
+          </div>
+          <div>
+            <span>Backend</span>
+            <strong>FastAPI + Pydantic</strong>
+          </div>
+          <div>
+            <span>Decision Layer</span>
+            <strong>Ranking + Memory + Taste Graph</strong>
+          </div>
+          <div>
+            <span>Data Mode</span>
+            <strong>Mock now, MCP tools next</strong>
+          </div>
+        </div>
+      </section>
+
+      <footer className="landing-footer">
+        <p>CraveLess 2026. Decision intelligence for food ordering.</p>
       </footer>
-    </div>
+    </main>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    background: '#fff',
-  },
-  header: {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    color: '#fff',
-    padding: '80px 20px',
-    textAlign: 'center',
-  },
-  hero: {},
-  title: {
-    fontSize: '48px',
-    marginBottom: '8px',
-  },
-  subtitle: {
-    fontSize: '24px',
-    marginBottom: '16px',
-    opacity: 0.9,
-  },
-  tagline: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-  },
-  content_width: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  problem: {
-    padding: '60px 20px',
-    background: '#f9f9f9',
-  },
-  problem_grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '24px',
-    marginTop: '32px',
-  },
-  problem_item: {
-    textAlign: 'center',
-    padding: '24px',
-    background: '#fff',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  },
-  problem_icon: {
-    fontSize: '40px',
-    display: 'block',
-    marginBottom: '12px',
-  },
-  solution: {
-    padding: '60px 20px',
-  },
-  solution_text: {
-    fontSize: '18px',
-    textAlign: 'center',
-    maxWidth: '600px',
-    margin: '24px auto',
-  },
-  features: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '24px',
-    marginTop: '32px',
-  },
-  feature: {
-    padding: '24px',
-    background: '#f9f9f9',
-    borderRadius: '8px',
-    borderLeft: '4px solid #667eea',
-  },
-  cta: {
-    padding: '60px 20px',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  login_options: {
-    display: 'flex',
-    gap: '16px',
-    justifyContent: 'center',
-    marginTop: '24px',
-    flexWrap: 'wrap',
-  },
-  login_button: {
-    padding: '14px 32px',
-    border: 'none',
-    borderRadius: '4px',
-    color: '#fff',
-    cursor: 'pointer',
-    fontSize: '16px',
-    fontWeight: '600',
-  },
-  cta_text: {
-    marginTop: '16px',
-  },
-  demo_link: {
-    color: '#fff',
-    textDecoration: 'underline',
-    cursor: 'pointer',
-  },
-  tech_stack: {
-    padding: '60px 20px',
-    background: '#f9f9f9',
-  },
-  tech_grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-    gap: '24px',
-    marginTop: '32px',
-  },
-  tech_item: {
-    padding: '24px',
-    background: '#fff',
-    borderRadius: '8px',
-    textAlign: 'center',
-  },
-  footer: {
-    padding: '24px 20px',
-    textAlign: 'center',
-    borderTop: '1px solid #e0e0e0',
-  },
-};

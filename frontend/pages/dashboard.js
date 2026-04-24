@@ -1,245 +1,245 @@
-import { useEffect, useState } from 'react';
-import RecommendationCard from '../components/RecommendationCard';
 import axios from 'axios';
+import Link from 'next/link';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import CartSummary from '../components/CartSummary';
+import RecommendationCard from '../components/RecommendationCard';
 
-/**
- * Dashboard - Main user interface for recommendations and ordering.
- */
 export default function Dashboard() {
-  const [recommendations, setRecommendations] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [persona, setPersona] = useState('balanced');
-  const [cart, setCart] = useState([]);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  const userId = 'demo-user';
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const quickPrompts = [
+    'Quick lunch under 300 rupees',
+    'High protein dinner for gym day',
+    'Comfort food but still healthy',
+    'Try something new and bold',
+  ];
+
+  const personaHints = {
+    balanced: 'balanced across taste, health, price and delivery',
+    'health-first': 'prioritize nutrition and protein',
+    budget: 'prioritize lower total spend',
+    'fast-delivery': 'prioritize shortest delivery times',
+    explore: 'prioritize novelty and unseen options',
+  };
+
+  const [query, setQuery] = useState('I want something healthy but quick under 350 rupees.');
+  const [persona, setPersona] = useState('balanced');
+  const [recommendations, setRecommendations] = useState([]);
+  const [agentReply, setAgentReply] = useState('');
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+  const [loadingCartSummary, setLoadingCartSummary] = useState(false);
+  const [error, setError] = useState(null);
+  const [cart, setCart] = useState([]);
+  const [cartSummary, setCartSummary] = useState(null);
+  const [feedbackText, setFeedbackText] = useState('');
+
+  const cartTotal = useMemo(
+    () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [cart]
+  );
+
+  const enrichQueryWithPersona = useCallback(
+    (baseQuery) => `${baseQuery} Please optimize for ${personaHints[persona]}.`,
+    [persona]
+  );
+
+  const fetchRecommendations = useCallback(async (inputQuery) => {
+    setLoadingRecommendations(true);
+    setError(null);
+
+    try {
+      const response = await axios.post(`${API_URL}/agent/chat`, {
+        user_id: userId,
+        message: enrichQueryWithPersona(inputQuery),
+      });
+
+      setAgentReply(response.data.message || 'Recommendations generated successfully.');
+      setRecommendations(response.data.recommendations || []);
+      setFeedbackText('');
+    } catch (err) {
+      setError(err.response?.data?.detail || err.message || 'Failed to get recommendations.');
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  }, [API_URL, enrichQueryWithPersona]);
+
+  const fetchCartSummary = useCallback(async (nextCart) => {
+    if (!nextCart.length) {
+      setCartSummary(null);
+      return;
+    }
+
+    setLoadingCartSummary(true);
+    try {
+      const response = await axios.post(`${API_URL}/cart/summary`, {
+        items: nextCart.map((item) => ({
+          item_id: item.id,
+          quantity: item.quantity,
+        })),
+      });
+      setCartSummary(response.data);
+    } catch {
+      setCartSummary(null);
+    } finally {
+      setLoadingCartSummary(false);
+    }
+  }, [API_URL]);
 
   useEffect(() => {
-    fetchRecommendations();
-  }, [persona]);
+    fetchRecommendations(query);
+  }, []);
 
-  const fetchRecommendations = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.post(
-        `${API_URL}/recommendations/get-top-3`,
-        {
-          persona: persona,
-          intent: null,
-          filters: null,
-        }
-      );
-      setRecommendations(response.data.recommendations);
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching recommendations:', err);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    fetchCartSummary(cart);
+  }, [cart, fetchCartSummary]);
+
+  const handlePromptSubmit = async (event) => {
+    event.preventDefault();
+    await fetchRecommendations(query);
+  };
+
+  const handleQuickPrompt = async (prompt) => {
+    setQuery(prompt);
+    await fetchRecommendations(prompt);
   };
 
   const handleRate = (itemId) => {
-    alert(`Rated ${itemId} 5/5!`);
-    // In production: Send to backend
+    setFeedbackText(`Saved preference for ${itemId}.`);
   };
 
   const handleNeverAgain = (itemId) => {
-    alert(`Removed ${itemId} from recommendations`);
-    // In production: Send to backend
+    setRecommendations((prev) => prev.filter((rec) => rec.item.id !== itemId));
+    setFeedbackText(`Removed ${itemId} from suggestions.`);
   };
 
   const addToCart = (item) => {
-    const existing = cart.find(i => i.id === item.id);
+    const existing = cart.find((i) => i.id === item.id);
     if (existing) {
-      setCart(cart.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
+      setCart(
+        cart.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        )
+      );
     } else {
       setCart([...cart, { ...item, quantity: 1 }]);
     }
   };
 
+  const handleCheckout = () => {
+    setFeedbackText('Checkout simulation complete. Order pipeline is ready for Swiggy MCP wiring.');
+  };
+
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <h1> CraveLess</h1>
-        <p>AI Food Decision Engine</p>
+    <main className="dashboard-shell">
+      <header className="dashboard-topbar">
+        <div>
+          <p className="kicker">CraveLess Agent Console</p>
+          <h1>Recommendation Workspace</h1>
+        </div>
+        <Link href="/" className="button button-ghost">
+          Back to Home
+        </Link>
       </header>
 
-      <div style={styles.controls}>
-        <label style={styles.label}>Choose your persona:</label>
-        <div style={styles.persona_buttons}>
-          {['balanced', 'health-first', 'budget', 'fast_delivery', 'explore'].map(p => (
-            <button
-              key={p}
-              style={{
-                ...styles.persona_button,
-                ...(persona === p ? styles.persona_button_active : {}),
-              }}
-              onClick={() => setPersona(p)}
-            >
-              {p === 'balanced' && ''}
-              {p === 'health-first' && ''}
-              {p === 'budget' && ''}
-              {p === 'fast_delivery' && ''}
-              {p === 'explore' && ''}
-              {' ' + p.replace('_', ' ')}
-            </button>
-          ))}
-        </div>
-      </div>
+      <section className="dashboard-layout">
+        <div className="dashboard-main-panel">
+          <div className="agent-input-card">
+            <form onSubmit={handlePromptSubmit} className="agent-prompt-form">
+              <label htmlFor="prompt">Describe your craving or constraints</label>
+              <textarea
+                id="prompt"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                rows={3}
+              />
 
-      <div style={styles.content}>
-        <div style={styles.recommendations}>
-          <h2> Top 3 Recommendations</h2>
-          {loading && <p>Loading...</p>}
-          {error && <p style={styles.error}>Error: {error}</p>}
-          {!loading && recommendations.length === 0 && <p>No recommendations yet</p>}
-          {recommendations.map(rec => (
-            <div key={rec.item.id}>
+              <div className="persona-row">
+                {Object.keys(personaHints).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`persona-chip ${persona === p ? 'active' : ''}`}
+                    onClick={() => setPersona(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+
+              <div className="quick-prompts-row">
+                {quickPrompts.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    className="quick-prompt"
+                    onClick={() => handleQuickPrompt(prompt)}
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+
+              <div className="agent-actions-row">
+                <button className="button button-primary" type="submit" disabled={loadingRecommendations}>
+                  {loadingRecommendations ? 'Thinking...' : 'Get Recommendations'}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {error && <p className="inline-error">{error}</p>}
+          {feedbackText && <p className="inline-feedback">{feedbackText}</p>}
+
+          <div className="agent-response-card">
+            <h2>Agent Explanation</h2>
+            <p>{agentReply || 'Run a prompt to generate recommendations.'}</p>
+          </div>
+
+          <div className="recommendation-list">
+            <h2>Top Recommendations</h2>
+            {!loadingRecommendations && recommendations.length === 0 && (
+              <p className="empty-state">No recommendations yet. Try a prompt above.</p>
+            )}
+
+            {recommendations.map((rec) => (
               <RecommendationCard
+                key={rec.item.id}
                 recommendation={rec}
                 onRate={handleRate}
                 onNeverAgain={handleNeverAgain}
+                onAddToCart={addToCart}
               />
-              <button
-                style={styles.add_to_cart_button}
-                onClick={() => addToCart(rec.item)}
-              >
-                 Add to Cart
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <div style={styles.sidebar}>
-          <h2> Cart ({cart.length})</h2>
-          {cart.length === 0 ? (
-            <p style={styles.empty_cart}>Your cart is empty</p>
-          ) : (
-            <>
-              <div style={styles.cart_items}>
-                {cart.map(item => (
-                  <div key={item.id} style={styles.cart_item}>
-                    <span>{item.name}</span>
-                    <span>₹{item.price} x {item.quantity}</span>
-                  </div>
-                ))}
+        <aside className="dashboard-sidebar">
+          <div className="mini-cart">
+            <div className="mini-cart-head">
+              <h3>Cart</h3>
+              <strong>Rs {cartTotal.toFixed(0)}</strong>
+            </div>
+            {!cart.length && <p className="empty-state">Cart is empty.</p>}
+
+            {cart.map((item) => (
+              <div className="mini-cart-item" key={item.id}>
+                <span>{item.name}</span>
+                <span>
+                  Rs {item.price} x {item.quantity}
+                </span>
               </div>
-              <div style={styles.cart_total}>
-                Total: ₹{cart.reduce((sum, item) => sum + item.price * item.quantity, 0)}
-              </div>
-              <button style={styles.checkout_button}>
-                Checkout
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+            ))}
+          </div>
+
+          <CartSummary
+            cartCount={cart.length}
+            summary={cartSummary}
+            loading={loadingCartSummary}
+            onCheckout={handleCheckout}
+          />
+        </aside>
+      </section>
+    </main>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    background: '#f9f9f9',
-    padding: '20px',
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '32px',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    color: '#fff',
-    padding: '32px',
-    borderRadius: '8px',
-  },
-  controls: {
-    marginBottom: '24px',
-  },
-  label: {
-    display: 'block',
-    marginBottom: '12px',
-    fontWeight: '600',
-  },
-  persona_buttons: {
-    display: 'flex',
-    gap: '8px',
-    flexWrap: 'wrap',
-  },
-  persona_button: {
-    padding: '8px 16px',
-    background: '#fff',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '13px',
-    transition: 'all 0.2s',
-  },
-  persona_button_active: {
-    background: '#667eea',
-    color: '#fff',
-    borderColor: '#667eea',
-  },
-  content: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 320px',
-    gap: '24px',
-  },
-  recommendations: {
-    flex: 1,
-  },
-  sidebar: {
-    background: '#fff',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    padding: '16px',
-    height: 'fit-content',
-    position: 'sticky',
-    top: '20px',
-  },
-  cart_items: {
-    marginBottom: '12px',
-  },
-  cart_item: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '8px',
-    borderBottom: '1px solid #eee',
-    fontSize: '13px',
-  },
-  cart_total: {
-    fontWeight: 'bold',
-    fontSize: '16px',
-    marginBottom: '12px',
-    padding: '8px 0',
-    borderTop: '2px solid #eee',
-  },
-  empty_cart: {
-    color: '#999',
-    textAlign: 'center',
-    padding: '20px',
-  },
-  checkout_button: {
-    width: '100%',
-    padding: '10px',
-    background: '#4CAF50',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontWeight: '600',
-  },
-  add_to_cart_button: {
-    width: '100%',
-    padding: '8px',
-    background: '#667eea',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginBottom: '12px',
-  },
-  error: {
-    color: '#f44336',
-  },
-};
