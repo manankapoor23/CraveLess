@@ -1,15 +1,10 @@
 """
-CraveLess AI Agent Service
-Orchestrates LLM-based decision making using existing services as tools.
+CraveLess AI Agent Service (Simplified)
+Orchestrates decision making using existing services as tools.
 """
 
 import json
-import os
 from typing import Optional, Any, List, Dict
-from langchain.agents import initialize_agent, Tool
-from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from pydantic import BaseModel
 
 from services.ranking_engine import RankingEngine
@@ -30,14 +25,14 @@ class AgentResponse(BaseModel):
     message: str
     recommendations: Optional[List[Dict[str, Any]]] = None
     reasoning: Optional[str] = None
-    tools_used: Optional[List[str]] = None
+    tools_used: Optional[List[str]] = []
 
 
 class CraveLessAgent:
     """AI Agent for intelligent food recommendations."""
     
     def __init__(self, user_id: Optional[str] = None):
-        """Initialize agent with services and LLM."""
+        """Initialize agent with services."""
         self.user_id = user_id or "default_user"
         
         # Initialize services
@@ -46,243 +41,122 @@ class CraveLessAgent:
         self.memory_engine = MemoryEngine()
         self.nutrition_engine = NutritionEngine()
         
-        # Initialize LLM
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY not set in environment")
+        # Conversation history
+        self.conversation_history: List[ConversationMessage] = []
         
-        self.llm = ChatOpenAI(
-            model="gpt-4o-mini",
-            temperature=0.7,
-            api_key=api_key,
-            streaming=False
-        )
-        
-        # Initialize conversation memory
-        self.memory = ConversationBufferMemory(
-            memory_key="chat_history",
-            return_messages=True,
-            human_prefix="User",
-            ai_prefix="Agent"
-        )
-        
-        # Define tools
-        self.tools = self._define_tools()
-        
-        # Initialize agent
-        self.agent = initialize_agent(
-            self.tools,
-            self.llm,
-            agent="chat-conversational-react-description",
-            memory=self.memory,
-            verbose=True,
-            max_iterations=5,
-            handle_parsing_errors=True
-        )
-        
-        # System prompt
-        self.system_prompt = """You are CraveLess, an intelligent food decision engine designed to help users 
-make the best food choices based on their preferences, health goals, and constraints.
-
-Your approach:
-1. LISTEN - Understand user intent and constraints
-2. THINK - Use available tools to gather information about options
-3. RECOMMEND - Provide personalized recommendations with clear reasoning
-4. EXPLAIN - Help users understand why these choices match their goals
-
-Always:
-- Ask clarifying questions if user intent is unclear
-- Consider health, taste, budget, and delivery time factors
-- Remember user preferences from conversation history
-- Be conversational and friendly
-- Provide actionable recommendations, not just lists
-
-Available tools help you:
-- Search menu and get nutrition info
-- Calculate recommendation scores
-- Access user taste preferences
-- Make final decisions
-
-When recommending, always explain your reasoning clearly."""
+        # Last determined persona
+        self.current_persona = "balanced"
     
-    def _define_tools(self) -> List[Tool]:
-        """Define tools for the agent."""
+    def _parse_intent(self, message: str) -> Dict[str, Any]:
+        """Parse user intent from natural language."""
+        intent = {
+            "health_focused": False,
+            "budget_focused": False,
+            "speed_focused": False,
+            "explore_mode": False,
+        }
         
-        def search_menu_tool(query: str) -> str:
-            """Search menu by cuisine, ingredient, or item name."""
-            query_lower = query.lower()
-            results = []
-            for item in MOCK_MENU:
-                if (query_lower in item['name'].lower() or
-                    query_lower in item['category'].lower() or
-                    query_lower in item['description'].lower() or
-                    query_lower in item['cuisine'].lower()):
-                    results.append({
-                        'id': item['id'],
-                        'name': item['name'],
-                        'cuisine': item['cuisine'],
-                        'price': item['price'],
-                        'delivery_time': item['delivery_time_mins'],
-                        'rating': item['rating'],
-                        'is_new': item['is_new']
-                    })
-            return json.dumps(results[:10]) if results else "No items found"
+        msg_lower = message.lower()
         
-        def get_nutrition_tool(item_id: str) -> str:
-            """Get nutrition information for an item."""
-            item = next((i for i in MOCK_MENU if i['id'] == item_id), None)
-            if not item:
-                return f"Item {item_id} not found"
-            
-            nutrition = self.nutrition_engine.get_item_nutrition(item_id)
-            return json.dumps({
-                'name': item['name'],
-                'nutrition': nutrition,
-                'health_score': self.nutrition_engine.health_score(nutrition),
-                'allergens': item.get('allergens', [])
-            })
+        # Health intent
+        if any(word in msg_lower for word in ["healthy", "health", "nutrition", "protein", "diet", "fit", "gym"]):
+            intent["health_focused"] = True
         
-        def get_user_preferences_tool(constraint: str) -> str:
-            """Get user's taste preferences and history."""
-            prefs = self.memory_engine.get_user_preferences(self.user_id)
-            recent = self.memory_engine.get_recent_items(self.user_id, limit=5)
-            affinity = self.memory_engine.get_category_affinity(self.user_id)
-            
-            return json.dumps({
-                'preferences': prefs,
-                'recent_items': recent,
-                'category_affinity': affinity,
-                'total_orders': len(self.memory_engine.user_order_history.get(self.user_id, []))
-            })
+        # Budget intent
+        if any(word in msg_lower for word in ["cheap", "budget", "under", "dollar", "affordable"]):
+            intent["budget_focused"] = True
         
-        def calculate_score_tool(item_ids: str, persona: str = "Balanced") -> str:
-            """Calculate recommendation scores for items using persona weights."""
-            ids = item_ids.split(',')
-            items = [i for i in MOCK_MENU if i['id'] in ids]
-            
-            scores = []
-            for item in items:
-                score = self.ranking_engine.score_item(
-                    item,
-                    persona=persona,
-                    user_id=self.user_id
-                )
-                scores.append({
-                    'item_id': item['id'],
-                    'name': item['name'],
-                    'score': round(score, 2),
-                    'price': item['price'],
-                    'delivery_time': item['delivery_time_mins']
-                })
-            
-            # Sort by score descending
-            scores.sort(key=lambda x: x['score'], reverse=True)
-            return json.dumps(scores[:3])
+        # Speed intent
+        if any(word in msg_lower for word in ["quick", "fast", "busy", "hurry", "asap"]):
+            intent["speed_focused"] = True
         
-        def record_preference_tool(item_id: str, rating: int, notes: str = "") -> str:
-            """Record user preference for an item."""
-            self.memory_engine.record_preference(
-                user_id=self.user_id,
-                item_id=item_id,
-                rating=rating,
-                notes=notes
-            )
-            item = next((i for i in MOCK_MENU if i['id'] == item_id), None)
-            if item:
-                return f"Recorded {rating}/5 rating for {item['name']}"
-            return "Preference recorded"
+        # Explore intent
+        if any(word in msg_lower for word in ["new", "try", "explore", "different", "surprise"]):
+            intent["explore_mode"] = True
         
-        def get_taste_graph_tool(cuisine: str) -> str:
-            """Get related cuisines and ingredients based on taste graph."""
-            related = self.taste_graph.get_related_nodes(cuisine)
-            return json.dumps({
-                'cuisine': cuisine,
-                'related_cuisines': related,
-                'suggestion': f"Since you like {cuisine}, you might enjoy these related options"
-            })
-        
-        tools = [
-            Tool(
-                name="search_menu",
-                func=search_menu_tool,
-                description="Search menu by cuisine, ingredient, or item name. Input: search query (string)"
-            ),
-            Tool(
-                name="get_nutrition",
-                func=get_nutrition_tool,
-                description="Get nutrition information and health score for an item. Input: item_id (string)"
-            ),
-            Tool(
-                name="get_user_preferences",
-                func=get_user_preferences_tool,
-                description="Get user's taste preferences, recent orders, and food affinities. Input: any constraint (string)"
-            ),
-            Tool(
-                name="calculate_score",
-                func=calculate_score_tool,
-                description="Calculate recommendation scores for items. Input: comma-separated item IDs and optional persona (Balanced, Health-First, Budget, Fast-Delivery, Explore)"
-            ),
-            Tool(
-                name="record_preference",
-                func=record_preference_tool,
-                description="Record user rating for an item to improve future recommendations. Input: item_id, rating (1-5), optional notes"
-            ),
-            Tool(
-                name="get_taste_graph",
-                func=get_taste_graph_tool,
-                description="Get related cuisines and ingredients based on user taste patterns. Input: cuisine name (string)"
-            )
-        ]
-        
-        return tools
+        return intent
+    
+    def _select_persona(self, intent: Dict[str, Any]) -> str:
+        """Select persona based on intent."""
+        if intent["health_focused"]:
+            return "health-first"
+        elif intent["budget_focused"]:
+            return "budget"
+        elif intent["speed_focused"]:
+            return "fast-delivery"
+        elif intent["explore_mode"]:
+            return "explore"
+        else:
+            return "balanced"
+    
+    def _get_recommendations(self, persona: str) -> List[Dict]:
+        """Get recommendations based on persona."""
+        recommendations = self.ranking_engine.get_top_3_with_explanation(
+            MOCK_MENU,
+            persona=persona.lower()
+        )
+        return recommendations
     
     def chat(self, user_message: str) -> AgentResponse:
-        """
-        Process user message through agent and return response.
+        """Process user message and return agentic response."""
         
-        Args:
-            user_message: User's natural language input
-            
-        Returns:
-            AgentResponse with message, recommendations, and reasoning
-        """
-        try:
-            # Get agent response
-            response = self.agent.run(
-                input=user_message,
-                system_message=self.system_prompt
-            )
-            
-            # Parse response
-            return AgentResponse(
-                message=response,
-                reasoning="Agent processed your request and provided recommendations",
-                tools_used=["search_menu", "calculate_score", "get_user_preferences"]
-            )
-        except Exception as e:
-            return AgentResponse(
-                message=f"I encountered an issue: {str(e)}. Could you rephrase your request?",
-                reasoning=f"Error: {str(e)}"
-            )
+        # Parse intent
+        intent = self._parse_intent(user_message)
+        
+        # Select persona
+        persona = self._select_persona(intent)
+        self.current_persona = persona
+        
+        # Get recommendations
+        recommendations = self._get_recommendations(persona)
+        
+        # Build response message
+        response_parts = []
+        
+        # Acknowledge intent
+        if intent["health_focused"]:
+            response_parts.append("Great! You're looking for healthy options.")
+        elif intent["budget_focused"]:
+            response_parts.append("Looking for affordable choices?")
+        elif intent["speed_focused"]:
+            response_parts.append("Let me find something quick for you!")
+        elif intent["explore_mode"]:
+            response_parts.append("Let's explore something new!")
+        else:
+            response_parts.append("Let me find the best match for you.")
+        
+        response_parts.append(f"\nUsing {persona.title()} persona:\n")
+        
+        # Add recommendations
+        for rec in recommendations:
+            response_parts.append(f"{rec['rank']}. {rec['item']['name']}")
+            response_parts.append(f"   Score: {rec['score']:.2f}/10")
+            response_parts.append(f"   Why: {rec['explanation']}")
+            response_parts.append("")
+        
+        message = "\n".join(response_parts)
+        
+        # Store in conversation history
+        self.conversation_history.append(ConversationMessage(role="user", content=user_message))
+        self.conversation_history.append(ConversationMessage(role="assistant", content=message))
+        
+        return AgentResponse(
+            message=message,
+            recommendations=recommendations,
+            reasoning=f"Persona selected: {persona}",
+            tools_used=["parse_intent", "select_persona", "rank_items"]
+        )
     
     def reset_memory(self):
         """Clear conversation history."""
-        self.memory.clear()
+        self.conversation_history = []
     
     def get_history(self) -> List[ConversationMessage]:
         """Get conversation history."""
-        messages = []
-        if hasattr(self.memory, 'buffer'):
-            for msg in self.memory.buffer:
-                if isinstance(msg, dict):
-                    messages.append(ConversationMessage(
-                        role=msg.get('type', 'user'),
-                        content=msg.get('content', '')
-                    ))
-        return messages
+        return self.conversation_history
 
 
-# Singleton agent instance (in production, use per-user instances)
+# Singleton agent instance
 _agent_instance: Optional[CraveLessAgent] = None
 
 
