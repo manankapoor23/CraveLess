@@ -10,7 +10,7 @@ import uvicorn
 import os
 
 from db.database import init_db
-from routes import auth, recommendations, cart
+from routes import auth, recommendations, cart, agent
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -38,6 +38,7 @@ async def startup():
     print(" API Docs: http://localhost:8000/docs")
     print(" OAuth: /auth/login")
     print(" Recommendations: /recommendations/get-top-3")
+    print(" Agent Chat: /agent/chat")
     print(" Cart: /cart/summary")
 
 
@@ -45,6 +46,7 @@ async def startup():
 app.include_router(auth.router)
 app.include_router(recommendations.router)
 app.include_router(cart.router)
+app.include_router(agent.router)
 
 
 @app.get("/")
