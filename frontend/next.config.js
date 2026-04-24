@@ -1,4 +1,4 @@
-"""Configuration for Next.js."""
+// Configuration for Next.js
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
