@@ -54,13 +54,21 @@ Dynamic mode switching:
 - **Explore**: Maximizes novelty (30% weight)
 - **Balanced**: Equal weighting across all factors (default)
 
-### 6. **OAuth Integration**
+### 6. **AI Agent Interface**
+- Natural language understanding for food requests
+- Conversational API endpoint (/agent/chat)
+- Multi-turn conversation with context awareness
+- Agent reasons through options using decision tools
+- Example: "I'm busy and hungry, something quick under $8" → instant intelligent recommendations
+- Built with LangChain + OpenAI (or local LLM)
+
+### 7. **OAuth Integration**
 - Backend-driven OAuth flow with full state validation
 - Support for Google, Swiggy, and other OAuth providers
 - HTTP-only cookies for security
 - Automatic session management
 
-### 7. **Nutrition Engine**
+### 8. **Nutrition Engine**
 - Item-level nutrition profiles
 - Cart-level macro ratios
 - Health scoring algorithm
@@ -74,12 +82,13 @@ Dynamic mode switching:
 
 ```
 /backend
-  /routes          → API endpoints (auth, recommendations, cart)
+  /routes          → API endpoints (auth, recommendations, cart, agent)
   /services        → Core business logic
     - ranking_engine.py    (Multi-objective scoring)
     - taste_graph.py       (Graph-based preferences)
     - memory_engine.py     (User preference tracking)
     - nutrition_engine.py  (Health & nutrition scoring)
+    - agent.py             (AI agent orchestration)
   /models          → SQLAlchemy database models
   /db              → Database setup and session management
   /data            → Mock data for quick start
